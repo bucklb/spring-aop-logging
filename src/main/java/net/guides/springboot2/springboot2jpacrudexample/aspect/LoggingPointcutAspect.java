@@ -4,6 +4,7 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 /*
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 //@Aspect
 @Component
+@Order(10)
 public class LoggingPointcutAspect {
 
     // Declare pointcuts up front & see how they combine
@@ -41,7 +43,7 @@ public class LoggingPointcutAspect {
     // Log controller calls using up front pointcut?
     @Before("anyConMethod()")
     public void logBeforeCON(JoinPoint joinPoint) {
-//		LogUtil.doLog("Enter(logB4_CON)",joinPoint);
+		LogUtil.doLog("Enter(logB4_CON)",joinPoint);
     }
 
     // Can we avoid having separate aspects for the various bits. Bundle stuff together
@@ -60,7 +62,7 @@ public class LoggingPointcutAspect {
     // Apply the wildcard stuff to EXCLUDE on MATCH and assess
     @Before("anySvcMethod() && !updateCall()")
     public void logBeforeNotUpdate(JoinPoint joinPoint) {
-//		LogUtil.doLog("Enter(logB4_NOT)",joinPoint);
+		LogUtil.doLog("Enter(logB4_NOT)",joinPoint);
     }
 
     // Apply the wildcard stuff to EXCLUDE on MATCH and assess part II
@@ -68,6 +70,19 @@ public class LoggingPointcutAspect {
     public void logBeforeNoUpdate(JoinPoint joinPoint) {
         LogUtil.doLog("Enter(logB4_NOU)",joinPoint);
     }
+
+
+    // Pointcut as a function of OTHER pointcuts
+    @Pointcut(" (anyConMethod() || anySvcMethod())  && !updateCall()")
+    public void logBeforeNoUpdatePC(){
+    }
+
+    // Apply the wildcard stuff to EXCLUDE on MATCH and assess part II
+    @Before("logBeforeNoUpdatePC()")
+    public void logBeforeNoUpdatePC(JoinPoint joinPoint) {
+        LogUtil.doLog("Enter(logB4_NUP)",joinPoint);
+    }
+
 
     // Attempting a pointcut on ANYTHING that includes an update is clearly too wide a net.  Expect exceptions :(
 //    // Apply the wildcard stuff to restrict to MATCH and assess
