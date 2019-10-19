@@ -43,8 +43,22 @@ public class SpringRestClient {
 		// Step5: Delete employee with id = 1
 		springRestClient.deleteEmployee(id);
 
-		// see what breaks
-//		springRestClient.forceInputException();
+		// should get an exception if we request an employee that cannot be found.
+		// Would be nice to see the exception appear in the AOP application's logs, even if we "handle" it here
+		try {
+			springRestClient.getEmployeeById(999999);
+		} catch (Exception ex) {
+			System.out.println("Oooops - controller!!!!  : " + ex.getMessage());
+			ex.printStackTrace(System.out);
+		}
+
+		// If the exception is in the service ???
+		try {
+			springRestClient.updateEmployee(999);
+		} catch (Exception ex) {
+			System.out.println("Oooops - service!!!!  : " + ex.getMessage());
+			ex.printStackTrace(System.out);
+		}
 
 
 
@@ -107,7 +121,7 @@ public class SpringRestClient {
 	// Would like to see how the exception handler copes with malformed request
 	private void forceException() {
 		Map<String, String> params = new HashMap<String, String>();
-		params.put("id", "one and only");
+		params.put("id", "this the one and only");
 
 		RestTemplate restTemplate = new RestTemplate();
 		Employee result = restTemplate.getForObject(GET_EMPLOYEE_ENDPOINT_URL, Employee.class, params);

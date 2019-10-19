@@ -64,5 +64,13 @@ public class Employee {
 		return "Employee [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", emailId=" + emailId
 				+ "]";
 	}
-	
+
+//	// Just to try out some aspect stuff !!  Not sure it can register??
+	public void updateEmployeeEmailsId(String addy){
+		System.out.println("updateEmployeeEmailsId" + "has been called.  Logged too?");
+		setEmailId(addy);
+	}
+
+
+
 }

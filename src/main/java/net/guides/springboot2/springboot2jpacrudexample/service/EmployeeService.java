@@ -51,12 +51,26 @@ public class EmployeeService {
 
 	public Employee updateEmployee(Long employeeId,
 			Employee employeeDetails) throws ResourceNotFoundException {
+
+		// Allow possibility of throwing an exception within the service AND NOT being a not found exception ...
+		if(employeeId > 69) {
+			throw new RuntimeException("It's too BIG!");
+		}
+
+
 		Employee employee = employeeRepository.findById(employeeId)
 				.orElseThrow(() -> new ResourceNotFoundException("Employee not found for this id :: " + employeeId));
 
 		employee.setEmailId(employeeDetails.getEmailId());
 		employee.setLastName(employeeDetails.getLastName());
 		employee.setFirstName(employeeDetails.getFirstName());
+
+
+
+
+		// See if call to employee can be caught by AOP too
+		employee.updateEmployeeEmailsId("forbiddden@access.com");
+
 		final Employee updatedEmployee = employeeRepository.save(employee);
 		return updatedEmployee;
 	}
